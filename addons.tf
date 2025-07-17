@@ -26,7 +26,7 @@ module "aws-load-balancer-controller" {
 ## IRSA AWS LOAD BALANCER CONTROLLER
 module "aws_lb_controller_irsa_role" {
   create_role = var.aws_load_balancer_controller_addon
-  source = "https://github.com/GlobalcommerceIT/terraform-aws-iam-eks-irsa-for-services.git"
+  source = "git::https://github.com/GlobalcommerceIT/terraform-aws-iam-eks-irsa-for-services.git?ref=main"
 
   role_name                              = "irsa_loadbalancer_controller-${var.cluster_name}"
   attach_load_balancer_controller_policy = true
@@ -109,7 +109,7 @@ module "external-secrets" {
 }
 module "external_secrets_irsa_role" {
   create_role = var.external_secrets_addon
-  source = "https://github.com/GlobalcommerceIT/terraform-aws-iam-eks-irsa-for-services.git"
+  source = "git::https://github.com/GlobalcommerceIT/terraform-aws-iam-eks-irsa-for-services.git?ref=main"
 
   role_name                             = "irsa_aws_external_secrets-${var.cluster_name}"
   attach_external_secrets_policy        = true
@@ -213,7 +213,7 @@ module "app-mesh" {
 # IRSA PARA CLOUDWATCH
 module "cloudwatch_observability_irsa_role" {
   create_role = var.cloudwatch_observability_addon
-  source = "https://github.com/GlobalcommerceIT/terraform-aws-iam-eks-irsa-for-services.git"
+  source = "git::https://github.com/GlobalcommerceIT/terraform-aws-iam-eks-irsa-for-services.git?ref=main"
 
   role_name                              = var.cloudwatch_observability_addon_role_name
   attach_cloudwatch_observability_policy = true
