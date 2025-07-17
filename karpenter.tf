@@ -10,7 +10,7 @@ data "aws_ecrpublic_authorization_token" "token" {
 
 module "karpenter" {
   create = var.karpenter_module
-  source = "git::git@github.com/GlobalcommerceIT/terraform-aws-eks//modules/karpenter"
+  source = "git::https://github.com/GlobalcommerceIT/terraform-aws-eks//modules/karpenter"
 
   cluster_name                    = var.cluster_name
   irsa_oidc_provider_arn          = aws_iam_openid_connect_provider.oidc_provider[0].arn
