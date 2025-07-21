@@ -33,6 +33,10 @@ kind: Ingress
 metadata:
   name: argocd-ingress
   namespace: argocd
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/certificate-arn: ${var.argocd_arn_certificate}
+    alb.ingress.kubernetes.io/subnets: ${join(",", var.argocd_ingress_subnets)}
 spec:
   ingressClassName: alb
   rules:
