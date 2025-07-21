@@ -1,15 +1,5 @@
 resource "kubectl_manifest" "ingress_argocd" {
   yaml_body = <<-YAML
-aapiVersion: eks.amazonaws.com/v1
-kind: IngressClassParams
-metadata:
-  name: alb
-spec:
-  scheme: internet-facing
-  subnets.ids: ${var.argocd_ingress_subnets}
-  certificateARNs: ${var.argocd_arn_certificate}
-
----
 apiVersion: networking.k8s.io/v1
 kind: IngressClass
 metadata:
