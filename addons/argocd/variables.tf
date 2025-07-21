@@ -24,5 +24,6 @@ variable "namespace" {
 }
 variable "chart_version" {
   description = "Version of the helm chart to install"
-  default = "5.46.8"
+  default = "v3.0.11"
+  #"5.46.8"
 }
