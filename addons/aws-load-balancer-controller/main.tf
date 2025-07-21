@@ -17,12 +17,12 @@ resource "helm_release" "aws-loadbalancer-controller" {
 
   set {
     name  = "image.tag"
-    value = var.chart_version
+    value = "v2.13.2"
   }
 
   set {
     name  = "image.repository"
-    value = "602401143452.dkr.ecr.us-east-1.amazonaws.com/amazon/aws-load-balancer-controller"
+    value = "public.ecr.aws/eks/aws-load-balancer-controller"
   }
 
   set {
