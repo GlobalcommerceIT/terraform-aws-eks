@@ -4,7 +4,7 @@ apiVersion: eks.amazonaws.com/v1
 kind: IngressClassParams
 metadata:
   namespace: argocd
-  name: argocd-alb
+  name: argocd-alb-params
 spec:
   scheme: internet-facing
 ---  
@@ -14,7 +14,7 @@ metadata:
   namespace: argocd
   labels:
     app.kubernetes.io/name: LoadBalancerController
-  name: alb
+  name: alb-argocd
   # annotations:
   #   # Use this annotation to set an IngressClass as Default
   #   # If an Ingress doesn't specify a class, it will use the Default
@@ -26,7 +26,7 @@ spec:
     apiGroup: eks.amazonaws.com
     kind: IngressClassParams
     # Use the name of the IngressClassParams set in the previous step
-    name: argocd-alb
+    name: argocd-alb-params
 ---
 
 apiVersion: networking.k8s.io/v1
@@ -39,7 +39,7 @@ metadata:
     alb.ingress.kubernetes.io/certificate-arn: ${var.argocd_arn_certificate}
     alb.ingress.kubernetes.io/subnets: ${var.argocd_ingress_subnets}
 spec:
-  ingressClassName: alb
+  ingressClassName: alb-argocd
   rules:
     - host: ${var.argocd_ingress_host}
       http:
