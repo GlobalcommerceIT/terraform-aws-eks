@@ -29,6 +29,7 @@ variable "namespace" {
 variable "service_account_name" {
   description = "The name of the service account to use"
   type        = string
+  default     = "alb-controller"
 }
 variable "chart_version" {
   description = "Version of the helm chart to install"
