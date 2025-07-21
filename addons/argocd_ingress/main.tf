@@ -3,18 +3,22 @@ resource "kubectl_manifest" "ingress_argocd" {
 apiVersion: eks.amazonaws.com/v1
 kind: IngressClassParams
 metadata:
-  name: alb
+  namespace: argocd
+  name: argocd-alb
 spec:
   scheme: internet-facing
 ---  
 apiVersion: networking.k8s.io/v1
 kind: IngressClass
 metadata:
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: LoadBalancerController
   name: alb
-  annotations:
-    # Use this annotation to set an IngressClass as Default
-    # If an Ingress doesn't specify a class, it will use the Default
-    ingressclass.kubernetes.io/is-default-class: "true"
+  # annotations:
+  #   # Use this annotation to set an IngressClass as Default
+  #   # If an Ingress doesn't specify a class, it will use the Default
+  #   ingressclass.kubernetes.io/is-default-class: "true"
 spec:
   # Configures the IngressClass to use EKS Auto Mode
   controller: eks.amazonaws.com/alb
@@ -22,7 +26,7 @@ spec:
     apiGroup: eks.amazonaws.com
     kind: IngressClassParams
     # Use the name of the IngressClassParams set in the previous step
-    name: alb
+    name: argocd-alb
 ---
 
 apiVersion: networking.k8s.io/v1
