@@ -693,6 +693,26 @@ variable "argocd_chart_version" {
   description = "Version of the helm chart of ArgoCD to install"
   default = ""
 }
+
+## INGRESs ARGOCD AUTO-MODE
+variable "deploy_argocd_ingress" {
+  description = "Flag to wether install or not argocd ingress on the cluster"
+  default     = false
+}
+variable "argocd_arn_certificate" {
+  description = "argocd ingress ssl certificate, arn"
+  default     = "arn:aws:acm:us-east-1:224607388582:certificate/xxyyy"
+}
+variable "argocd_ingress_subnets" {
+  description = "subnets id for argocd ingress"
+  default     = "subnet-xxyyy, subnet-yyyxxx"
+}
+variable "argocd_ingress_host" {
+  description = "host name for argocd ingress"
+  default     = "argocd.example.com"
+}
+
+
 variable "aws_load_balancer_controller_addon" {
   description = "Flag to wether install or not aws-load-balancer-controller on the cluster"
   default     = false

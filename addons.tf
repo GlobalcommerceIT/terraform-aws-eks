@@ -9,6 +9,19 @@ module "argocd" {
   eks_cluster_certificate_authority_data = base64decode(aws_eks_cluster.this[0].certificate_authority[0].data)
   eks_cluster_name                       = var.cluster_name
 }
+
+module "argocd-ingress" {
+  create = var.deploy_argocd_ingress
+  source = "./addons/argocd_ingress"
+  eks_cluster_endpoint                   = aws_eks_cluster.this[0].endpoint
+  eks_cluster_certificate_authority_data = base64decode(aws_eks_cluster.this[0].certificate_authority[0].data)
+  eks_cluster_name                       = var.cluster_name
+
+  argocd_arn_certificate  = var.argocd_arn_certificate
+  argocd_ingress_subnets  = var.argocd_ingress_subnets
+  argocd_ingress_host     = var.argocd_ingress_host
+
+}
 #############################################################################################
 ## ADDON AWS LOAD BALANCER CONTROLLER
 #############################################################################################
