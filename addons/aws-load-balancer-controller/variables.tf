@@ -32,5 +32,5 @@ variable "service_account_name" {
 }
 variable "chart_version" {
   description = "Version of the helm chart to install"
-  default = "v2.11.0"
+  default = "v2.13.3"
 }
