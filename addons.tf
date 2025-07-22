@@ -200,14 +200,14 @@ module "kube-prometheus" {
 }
 
 ## ADDON METRICS-SERVER
-# module "metrics-server" {
-#   create = var.metrics_server_addon
-#   source = "./addons/metrics-server"
+module "metrics-server" {
+  create = var.metrics_server_addon
+  source = "./addons/metrics-server"
 
-#   eks_cluster_endpoint                   = aws_eks_cluster.this[0].endpoint
-#   eks_cluster_certificate_authority_data = base64decode(aws_eks_cluster.this[0].certificate_authority[0].data)
-#   eks_cluster_name                       = var.cluster_name
-# }
+  eks_cluster_endpoint                   = aws_eks_cluster.this[0].endpoint
+  eks_cluster_certificate_authority_data = base64decode(aws_eks_cluster.this[0].certificate_authority[0].data)
+  eks_cluster_name                       = var.cluster_name
+}
 
 #############################################################################################
 ## ADDON APP-MESH
