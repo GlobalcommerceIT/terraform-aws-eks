@@ -31,7 +31,7 @@ module "aws-load-balancer-controller" {
   eks_cluster_endpoint                   = aws_eks_cluster.this[0].endpoint
   eks_cluster_certificate_authority_data = base64decode(aws_eks_cluster.this[0].certificate_authority[0].data)
   eks_cluster_name                       = var.cluster_name
-  //service_account_name                   = kubernetes_service_account.aws_lb_controller_service_account[0].metadata[0].name
+  service_account_name                   = kubernetes_service_account.aws_lb_controller_service_account[0].metadata[0].name
   eks_cluster_vpc_id                     = var.vpc_id
   chart_version                          = var.aws_load_balancer_controller_chart_version
 }
