@@ -109,10 +109,10 @@ spec:
           values: ["us-east-1a", "us-east-1b", "us-east-1c"]
         - key: karpenter.k8s.aws/instance-size
           operator: NotIn
-          values: ["nano", "micro", "small","medium","8xlarge"]
+          values: ["nano", "micro", "small"]
         - key: node.kubernetes.io/instance-type
           operator: In
-          values: ["t3a.medium","t3a.large"]
+          values: ["t3a.medium","t3a.large","m5a.large"]
       nodeClassRef:
         group: karpenter.k8s.aws
         kind: EC2NodeClass
