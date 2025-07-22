@@ -706,7 +706,7 @@ variable "karpenter_version" {
 variable "karpenter_sg_nodes" {
   description = "SG of nodes EKS cluster"
   type        = string
-  default     = ""
+  default     = "sg-xxew"
 }
 
 variable "app_mesh_addon" {
