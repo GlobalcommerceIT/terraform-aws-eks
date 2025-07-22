@@ -63,5 +63,5 @@ See the example snippet below which adds additional security group rules to the 
 The security groups created by this module are depicted in the image shown below along with their default inbound/outbound rules:
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/terraform-aws-modules/terraform-aws-eks/master/.github/images/security_groups.svg" alt="Security Groups" width="100%">
+  <img src="https://raw.githubusercontent.com/xepelinapp/terraform-aws-eks-v2/master/.github/images/security_groups.svg" alt="Security Groups" width="100%">
 </p>

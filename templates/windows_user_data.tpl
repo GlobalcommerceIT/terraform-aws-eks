@@ -1,8 +1,5 @@
-%{ if enable_bootstrap_user_data ~}
 <powershell>
-%{ endif ~}
 ${pre_bootstrap_user_data ~}
-%{ if enable_bootstrap_user_data ~}
 [string]$EKSBinDir = "$env:ProgramFiles\Amazon\EKS"
 [string]$EKSBootstrapScriptName = 'Start-EKSBootstrap.ps1'
 [string]$EKSBootstrapScriptFile = "$EKSBinDir\$EKSBootstrapScriptName"
@@ -10,4 +7,3 @@ ${pre_bootstrap_user_data ~}
 $LastError = if ($?) { 0 } else { $Error[0].Exception.HResult }
 ${post_bootstrap_user_data ~}
 </powershell>
-%{ endif ~}

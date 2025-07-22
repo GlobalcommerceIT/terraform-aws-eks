@@ -41,7 +41,7 @@ resource "helm_release" "appmesh" {
       "region"                                                    = "us-east-1"
       "serviceAccount.name"                                       = local.serviceaccount
       "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn" = module.irsa.arn
-      "tracing.enabled"                                           = true
+      "tracing.enabled"                                           = var.app_mesh_addon_trace
       "tracing.provider"                                          = "x-ray"
     }, lookup(var.helm, "vars", {}))
     content {

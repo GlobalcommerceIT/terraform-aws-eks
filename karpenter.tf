@@ -38,6 +38,8 @@
 #     AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 #     AmazonS3FullAccess                 = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 #     AmazonSESFullAccess                = "arn:aws:iam::aws:policy/AmazonSESFullAccess"
+#     AWSAppMeshEnvoyAccess              = "arn:aws:iam::aws:policy/AWSAppMeshEnvoyAccess"
+#     AWSAppMeshFullAccess               = "arn:aws:iam::aws:policy/AWSAppMeshFullAccess"
 #     AWSCloudMapFullAccess              = "arn:aws:iam::aws:policy/AWSCloudMapFullAccess"
 #     AWSXrayFullAccess                  = "arn:aws:iam::aws:policy/AWSXrayFullAccess"
 #   }
@@ -84,7 +86,7 @@
 # ###############################
 # resource "kubectl_manifest" "karpenter_nodepool_default" {
 #   yaml_body = <<-YAML
-# apiVersion: karpenter.sh/v1beta1
+# apiVersion: karpenter.sh/v1
 # kind: NodePool
 # metadata:
 #   name: default
@@ -110,17 +112,11 @@
 #         - key: karpenter.k8s.aws/instance-size
 #           operator: NotIn
 #           values: ["nano", "micro", "small","medium","8xlarge"]
-#         # - key: karpenter.k8s.aws/instance-family
-#         #   operator: In
-#         #   values: ["m5","m5a","r5a"]
-#         # - key: "karpenter.k8s.aws/instance-cpu"
-#         #   operator: In
-#         #   values: ["8"]
 #         - key: node.kubernetes.io/instance-type
 #           operator: In
-#           values: ["t3a.medium", "m5a.large"]
+#           values: ["c6a.xlarge", "c6a.2xlarge"]
 #       nodeClassRef:
-#         apiVersion: karpenter.k8s.aws/v1beta1
+#         group: karpenter.k8s.aws
 #         kind: EC2NodeClass
 #         name: default
 #   #
@@ -133,9 +129,22 @@
 #     cpu: 1000
 #     memory: 1000Gi
 #   disruption:
-#     consolidationPolicy: WhenUnderutilized
-#     #consolidateAfter: 30s
+#     consolidationPolicy: WhenEmptyOrUnderutilized
+#     consolidateAfter: 5m
 #     expireAfter: 720h # 30 * 24h = 720h
+#     # Budgets control the speed Karpenter can scale down nodes.
+#     # Karpenter will respect the minimum of the currently active budgets, and will round up
+#     # when considering percentages. Duration and Schedule must be set together.
+#     budgets:
+#     # Durante el dia no se permite disrupcion (matar nodos), de lunes a viernes inclusive
+#     # 11 a 05 UTC, 8 a 23 hs Chile
+#     - schedule: "0 12 * * mon-fri"
+#       duration: 15h
+#       nodes: "0"
+#       reasons:
+#       - "Underutilized"
+#       - "Empty"
+#       - "Drifted"
 # YAML
 
 #   depends_on = [
@@ -144,15 +153,14 @@
 # }
 # resource "kubectl_manifest" "karpenter_ec2nodeclass_default" {
 #   yaml_body = <<-YAML
-#   apiVersion: karpenter.k8s.aws/v1beta1
+#   apiVersion: karpenter.k8s.aws/v1
 #   kind: EC2NodeClass
 #   metadata:
 #     name: default
 #   spec:
 #     amiFamily: AL2023
 #     amiSelectorTerms:
-#       - alias: al2023@v20250212
-#     # 18/2 por restart de nodos al descubrir nuevas amis, se fija a version stable
+#     - alias: al2023@v20250212
 #     role: ${module.eks_managed_node_group["initial"].iam_role_name} 
 #     #initial-eks-node-group-20240726182942751700000002
 #     # SGs atachadas a las instancias ec2, tomados por discover de tag
@@ -160,7 +168,7 @@
 #     # - tags:
 #     #     karpenter.sh/discovery: ${var.cluster_name}
 #     securityGroupSelectorTerms:
-#       - id: ${var.karpenter_sg_nodes}
+#     - id: ${var.karpenter_sg_nodes}
 #     # Subnets atachadas a las instancias ec2, tomadas por discover de tag
 #     subnetSelectorTerms:
 #     - tags:
@@ -168,12 +176,13 @@
 #     tags:
 #       karpenter.sh/discovery: ${var.cluster_name}
 #       Name: eks-karpenter-node
-#     # blockDeviceMappings:
-#     #   - deviceName: /dev/xvda
-#     #     ebs:
-#     #       volumeSize: 100Gi
-#     #       volumeType: gp3
-#     #       encrypted: true
+#     blockDeviceMappings:
+#       - deviceName: /dev/xvda
+#         ebs:
+#           volumeSize: 150Gi
+#           deleteOnTermination: true
+#           volumeType: gp3
+#           encrypted: true
 #     metadataOptions:
 #       httpEndpoint: enabled
 #       httpProtocolIPv6: disabled

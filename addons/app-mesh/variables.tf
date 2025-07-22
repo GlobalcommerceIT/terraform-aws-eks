@@ -66,3 +66,8 @@ variable "oidc_arn" {
   type        = string
 }
 
+variable "app_mesh_addon_trace" {
+  description = "Flag to enable app-mesh x-ray trace on the cluster"
+  default     = true
+}
+

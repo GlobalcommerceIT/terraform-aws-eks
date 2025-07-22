@@ -22,7 +22,7 @@ resource "helm_release" "aws-loadbalancer-controller" {
 
   set {
     name  = "image.repository"
-    value = "public.ecr.aws/eks/aws-load-balancer-controller"
+    value = "602401143452.dkr.ecr.us-east-1.amazonaws.com/amazon/aws-load-balancer-controller"
   }
 
   set {

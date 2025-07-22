@@ -9,19 +9,6 @@ module "argocd" {
   eks_cluster_certificate_authority_data = base64decode(aws_eks_cluster.this[0].certificate_authority[0].data)
   eks_cluster_name                       = var.cluster_name
 }
-
-module "argocd-ingress" {
-  create = var.deploy_argocd_ingress
-  source = "./addons/argocd_ingress"
-  eks_cluster_endpoint                   = aws_eks_cluster.this[0].endpoint
-  eks_cluster_certificate_authority_data = base64decode(aws_eks_cluster.this[0].certificate_authority[0].data)
-  eks_cluster_name                       = var.cluster_name
-
-  argocd_arn_certificate  = var.argocd_arn_certificate
-  argocd_ingress_subnets  = var.argocd_ingress_subnets
-  argocd_ingress_host     = var.argocd_ingress_host
-
-}
 #############################################################################################
 ## ADDON AWS LOAD BALANCER CONTROLLER
 #############################################################################################
@@ -39,7 +26,7 @@ module "aws-load-balancer-controller" {
 ## IRSA AWS LOAD BALANCER CONTROLLER
 module "aws_lb_controller_irsa_role" {
   create_role = var.aws_load_balancer_controller_addon
-  source = "git::https://github.com/GlobalcommerceIT/terraform-aws-iam-eks-irsa-for-services.git?ref=main"
+  source = "git::https://github.com/GlobalcommerceIT/terraform-aws-iam-eks-irsa-for-services.git"
 
   role_name                              = "irsa_loadbalancer_controller-${var.cluster_name}"
   attach_load_balancer_controller_policy = true
@@ -90,7 +77,7 @@ resource "kubernetes_service_account" "aws_lb_controller_service_account" {
 # ## IRSA EXTERNAL-DNS
 # module "external_dns_irsa_role" {
 #   create_role = var.external_dns_addon
-#   source = "git::git@github.com/GlobalcommerceIT/terraform-aws-iam-eks-irsa-for-services.git"
+#   source = "git::https://github.com/GlobalcommerceIT/terraform-aws-iam-eks-irsa-for-services.git"
 
 #   role_name                  = "irsa_external_dns"
 #   attach_external_dns_policy = true
@@ -122,7 +109,7 @@ module "external-secrets" {
 }
 module "external_secrets_irsa_role" {
   create_role = var.external_secrets_addon
-  source = "git::https://github.com/GlobalcommerceIT/terraform-aws-iam-eks-irsa-for-services.git?ref=main"
+  source = "git::https://github.com/GlobalcommerceIT/terraform-aws-iam-eks-irsa-for-services.git"
 
   role_name                             = "irsa_aws_external_secrets-${var.cluster_name}"
   attach_external_secrets_policy        = true
@@ -215,6 +202,9 @@ module "metrics-server" {
 module "app-mesh" {
   create = var.app_mesh_addon
   source = "./addons/app-mesh"
+  
+  # enable x-ray tracing
+  app_mesh_addon_trace = var.app_mesh_trace
 
   eks_cluster_endpoint                   = aws_eks_cluster.this[0].endpoint
   eks_cluster_certificate_authority_data = base64decode(aws_eks_cluster.this[0].certificate_authority[0].data)
@@ -226,7 +216,7 @@ module "app-mesh" {
 # IRSA PARA CLOUDWATCH
 module "cloudwatch_observability_irsa_role" {
   create_role = var.cloudwatch_observability_addon
-  source = "git::https://github.com/GlobalcommerceIT/terraform-aws-iam-eks-irsa-for-services.git?ref=main"
+  source = "git::https://github.com/GlobalcommerceIT/terraform-aws-iam-eks-irsa-for-services.git"
 
   role_name                              = var.cloudwatch_observability_addon_role_name
   attach_cloudwatch_observability_policy = true

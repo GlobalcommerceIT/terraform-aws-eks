@@ -12,7 +12,7 @@ Please consult the `examples` directory for reference example configurations. If
   1. `var.iam_role_additional_policies` was changed from type `list(string)` to type `map(string)` -> this is a breaking change. More information on managing this change can be found below, under `Terraform State Moves`
   2. The logic used in the root module for this variable was changed to replace the use of `try()` with `lookup()`. More details on why can be found [here](https://github.com/clowdhaus/terraform-for-each-unknown)
 - The cluster name has been removed from the Karpenter module event rule names. Due to the use of long cluster names appending to the provided naming scheme, the cluster name has moved to a `ClusterName` tag and the event rule name is now a prefix. This guarantees that users can have multiple instances of Karpenter with their respective event rules/SQS queue without name collisions, while also still being able to identify which queues and event rules belong to which cluster.
-- The new variable `node_security_group_enable_recommended_rules` is set to true by default and may conflict with any custom ingress/egress rules. Please ensure that any duplicates from the `node_security_group_additional_rules` are removed before upgrading, or set `node_security_group_enable_recommended_rules` to false. [Reference](https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/docs/UPGRADE-19.0.md#added)
+- The new variable `node_security_group_enable_recommended_rules` is set to true by default and may conflict with any custom ingress/egress rules. Please ensure that any duplicates from the `node_security_group_additional_rules` are removed before upgrading, or set `node_security_group_enable_recommended_rules` to false. [Reference](https://github.com/xepelinapp/terraform-aws-eks-v2/blob/master/docs/UPGRADE-19.0.md#added)
 
 ## Additional changes
 
@@ -52,13 +52,13 @@ Please consult the `examples` directory for reference example configurations. If
 ### Removed
 
 - Remove all references of `aws_default_tags` to avoid update conflicts; this is the responsibility of the provider and should be handled at the provider level
-  - https://github.com/terraform-aws-modules/terraform-aws-eks/issues?q=is%3Aissue+default_tags+is%3Aclosed
-  - https://github.com/terraform-aws-modules/terraform-aws-eks/pulls?q=is%3Apr+default_tags+is%3Aclosed
+  - https://github.com/xepelinapp/terraform-aws-eks-v2/issues?q=is%3Aissue+default_tags+is%3Aclosed
+  - https://github.com/xepelinapp/terraform-aws-eks-v2/pulls?q=is%3Apr+default_tags+is%3Aclosed
 
 ### Variable and output changes
 
 1. Removed variables:
-
+ 
    - `node_security_group_ntp_ipv4_cidr_block` - default security group settings have an egress rule for ALL to `0.0.0.0/0`/`::/0`
    - `node_security_group_ntp_ipv6_cidr_block` - default security group settings have an egress rule for ALL to `0.0.0.0/0`/`::/0`
    - Self-managed node groups:
@@ -143,7 +143,7 @@ Self-managed node groups on `v18.x` by default create a security group that does
       }
     }
     ```
-- It is recommended to use the `aws-node-termination-handler` while performing this update. Please refer to the [`irsa-autoscale-refresh` example](https://github.com/terraform-aws-modules/terraform-aws-eks/blob/20af82846b4a1f23f3787a8c455f39c0b6164d80/examples/irsa_autoscale_refresh/charts.tf#L86) for usage. This will ensure that pods are safely evicted in a controlled manner to avoid service disruptions.
+- It is recommended to use the `aws-node-termination-handler` while performing this update. Please refer to the [`irsa-autoscale-refresh` example](https://github.com/xepelinapp/terraform-aws-eks-v2/blob/20af82846b4a1f23f3787a8c455f39c0b6164d80/examples/irsa_autoscale_refresh/charts.tf#L86) for usage. This will ensure that pods are safely evicted in a controlled manner to avoid service disruptions.
 - Once the necessary configurations are in place, you can apply the changes which will:
   1. Create a new launch template (version) without the self-managed node group security group
   2. Replace instances based on the `instance_refresh` configuration settings
@@ -364,12 +364,8 @@ EKS managed node groups on `v18.x` by default create a security group that does 
 
   # OIDC Identity provider
   cluster_identity_providers = {
-    cognito = {
-      client_id      = "702vqsrjicklgb7c5b7b50i1gc"
-      issuer_url     = "https://cognito-idp.us-west-2.amazonaws.com/us-west-2_re1u6bpRA"
-      username_claim = "email"
-      groups_claim   = "cognito:groups"
-      groups_prefix  = "gid:"
+    sts = {
+      client_id = "sts.amazonaws.com"
     }
   }
 
