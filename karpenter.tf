@@ -38,8 +38,6 @@ module "karpenter" {
     AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
     AmazonS3FullAccess                 = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
     AmazonSESFullAccess                = "arn:aws:iam::aws:policy/AmazonSESFullAccess"
-    AWSCloudMapFullAccess              = "arn:aws:iam::aws:policy/AWSCloudMapFullAccess"
-    AWSXrayFullAccess                  = "arn:aws:iam::aws:policy/AWSXrayFullAccess"
   }
 
   tags = var.tags
