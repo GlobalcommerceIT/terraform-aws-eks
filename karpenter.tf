@@ -109,7 +109,7 @@ spec:
           values: ["nano", "micro", "small"]
         - key: node.kubernetes.io/instance-type
           operator: In
-          values: ["t3a.medium","t3a.large"]
+          values: ["t3a.medium","t3a.large","c6a.xlarge"]
       nodeClassRef:
         group: karpenter.k8s.aws
         kind: EC2NodeClass
@@ -155,7 +155,7 @@ resource "kubectl_manifest" "karpenter_ec2nodeclass_default" {
   spec:
     amiFamily: AL2023
     amiSelectorTerms:
-    - alias: al2023@v20250212
+    - alias: al2023@v20260304
     role: ${module.eks_managed_node_group["initial"].iam_role_name} 
     #initial-eks-node-group-20240726182942751700000002
     # SGs atachadas a las instancias ec2, tomados por discover de tag
@@ -174,7 +174,7 @@ resource "kubectl_manifest" "karpenter_ec2nodeclass_default" {
     blockDeviceMappings:
       - deviceName: /dev/xvda
         ebs:
-          volumeSize: 100Gi
+          volumeSize: 150Gi
           deleteOnTermination: true
           volumeType: gp3
           encrypted: true
